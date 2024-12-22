@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Reset some default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+@import url("https://fonts.googleapis.com/css2?family=Spartan:wght@100;200;300;400;500;600;700;800;900&display=swap");
+body {
+  font-family: "Spartan", sans-serif;
+  background-color: #f1f5f9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  display: flex;
+  max-width: 900px;
+  height: 600px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.login-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: #ffffff;
+  padding: 40px;
+  flex: 0.75;
+}
+
+.promo-section {
+  background-color: #ed8f01;
+  background-image: url(assets/login4.png);
+  background-size: cover;
+  background-position: -70px;
+  flex: 1;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ed8f01;
+}
+
+h2 {
+  margin-top: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+p {
+  margin-top: 10px;
+  color: #666;
+}
+
+.social-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+
+form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+input[type="email"],
+input[type="password"] {
+  padding: 12px;
+  margin-top: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.login-btn {
+  background-color: #ed8f01;
+  color: #ffffff;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.3s;
+}
+
+.login-btn:hover {
+  background-color: #ad8242;
+}
+
+.signup {
+  margin-top: 20px;
+  color: #666;
+}
+
+.signup a {
+  color: #ed8f01;
+  text-decoration: none;
+}
+
+.promo-content {
+    
+  text-align: center;
+  padding: 20px;
+}
+
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="login-section">
+            <div class="logo">Logo</div>
+            <h2>Log into your Account</h2>
+            <p>Welcome back!</p>
+            <form action="index.html" method="post">
+                <input type="email" placeholder="Email" required>
+                <input type="password" placeholder="Password" required>
+                <div class="form-options">
+                    <label><input type="checkbox"> Remember me</label>
+                    <a href="#" style="text-decoration: none; color: #ab6805">Forgot Password?</a>
+                </div>
+                <button type="submit" class="login-btn">Log in</button>
+            </form>
+            <p class="signup">Don't have an account? <a href="Signup.html">Create an account</a></p>
+        </div>
+        <div class="promo-section">
+            <div class="promo-content">
+               
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
