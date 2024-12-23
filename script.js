@@ -3,6 +3,8 @@ const nav = document.getElementById("navbar");
 const close = document.getElementById("close");
 const apiBaseUrl = "https://ecommerce.routemisr.com/api/v1/";
 const productsEndPoint = "products";
+const cartEndPoint = "cart";
+var cart = [];
 if (bar) {
   bar.addEventListener("click", () => {
     nav.classList.add("active");
@@ -42,7 +44,9 @@ async function fetchProducts(page, pagination) {
 }
 function updateProductSection(products, isNewArrival) {
   const productContainer = document.querySelector(
-    `${isNewArrival ? '#new-arrival' : '#featured-products'} #product1 .pro-container`
+    `${
+      isNewArrival ? "#new-arrival" : "#featured-products"
+    } #product1 .pro-container`
   );
 
   productContainer.innerHTML = ""; // Clear previous products
@@ -50,34 +54,45 @@ function updateProductSection(products, isNewArrival) {
   products.forEach((product) => {
     const productHTML = `
             <div class="pro">
-                <img src="${product.imageCover}" alt="${product.title}">
+                <img src="${product.imageCover}" alt="${product.title}" onclick="handleProductClick('${product._id}')">
                 <div class="des">
                     <span>${product.brand.name}</span>
                     <h5>${product.title}</h5>
                     <div class="star">${generateStars(
-      product.ratingsAverage
-    )}</div>
+                      product.ratingsAverage
+                    )}</div>
                     <h4>$${product.price}</h4>
                 </div>
-                <a href="#" class="cart-btn"><i class="fa-solid fa-cart-shopping cart"></i></a>
+                <div class="cart-btn" data-product='${JSON.stringify(product).replace(/'/g, "&apos;").replace(/"/g, "&quot;")}'><i class="fa-solid fa-cart-shopping cart"></i></div>
             </div>
         `;
-    const productElement = document.createElement("div");
-    productElement.innerHTML = productHTML;
+        
+    //const productElement = document.createElement("div");
+    productContainer.innerHTML += productHTML;
+    
+    //const productDiv = productElement.firstElementChild;
+    
+    // productDiv.onclick = function () {
+    //   // handleProductClick(product);
+    // };
 
-    const productDiv = productElement.firstElementChild;
-
-    productDiv.onclick = function () {
-      handleProductClick(product);
-    };
-
-    productContainer.appendChild(productDiv);
+    //productContainer.appendChild(productDiv);
+    
   });
+  document.querySelectorAll('.cart-btn').forEach((button) => {
+    button.addEventListener('click', async() => {
+      const product = JSON.parse(button.getAttribute('data-product'));
+      await addToCart(product);
+      console.log("Adding product to cart:", product);
+      // Add your cart handling logic here
+    });
+  });
+  
 }
 
-function handleProductClick(product) {
-  console.log("Product clicked:", product);
-  window.location.href = `sproduct.html?id=${product._id}`;
+function handleProductClick(productId) {
+  console.log("Product clicked:", productId);
+  window.location.href = `sproduct.html?id=${productId}`;
 }
 
 function generateStars(rating) {
@@ -138,9 +153,13 @@ function updateSpecificProduct(product) {
   const productDetailsContainer = document.querySelector(
     "#prodetails .single-pro-details"
   );
+  
   productDetailsContainer.innerHTML += `<h4>Product Details</h4>
     <span>${product.description}
     </span>`;
+    const addToCartButton = document.querySelector(
+      "#prodetails .single-pro-details .normal"
+    );
   const details = document.querySelector(
     "#prodetails .single-pro-details #details"
   );
@@ -160,6 +179,10 @@ function updateSpecificProduct(product) {
              <img src="${image}" width="100%" class="small-img" alt="">
            </div>`;
   });
+  addToCartButton.onclick = async function(){
+    await addToCart(product);
+    console.log("event listener");
+  };
   handleDetailsImages(product.images.length);
 }
 function getQueryParam(name) {
@@ -180,7 +203,7 @@ function handleDetailsImages(length) {
 
 // Login script
 async function getUserInfo() {
-  const response = await fetch('./login_feature/get_user_info.php');
+  const response = await fetch("./login_feature/get_user_info.php");
   const data = await response.json();
   return data;
 }
@@ -192,7 +215,7 @@ async function authUser() {
     // User is logged in, proceed to checkout
     // console.log("User is logged in. Redirecting to checkout...");
     // POST products to api logic here
-    // TO-DO  
+    // TO-DO
   } else {
     // User is not logged in showing pop up
     // console.log("User not logged in. Redirecting to login page.");
@@ -213,22 +236,280 @@ async function authUser() {
         </div>
     </div>
 `;
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-    document.getElementById('authModal').style.display = 'block';
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+    document.getElementById("authModal").style.display = "block";
     // Modal Button Logic
-    document.getElementById('loginButton').addEventListener('click', () => {
-      window.location.href = './login.html'; // Redirect to login page
+    document.getElementById("loginButton").addEventListener("click", () => {
+      window.location.href = "./login.html"; // Redirect to login page
     });
 
-    document.getElementById('signupButton').addEventListener('click', () => {
-      window.location.href = './Signup.html'; // Redirect to sign-up page
+    document.getElementById("signupButton").addEventListener("click", () => {
+      window.location.href = "./Signup.html"; // Redirect to sign-up page
     });
 
-    document.getElementById('closeModalButton').addEventListener('click', () => {
-      // Close the modal
-      document.getElementById('authModal').style.display = 'none';
-    });
-
+    document
+      .getElementById("closeModalButton")
+      .addEventListener("click", () => {
+        // Close the modal
+        document.getElementById("authModal").style.display = "none";
+      });
   }
 }
 
+async function addToCart(product) {
+  // Validate product object
+  if (!product || !product._id || !product.description) {
+    console.error("Invalid product data:", product);
+    return;
+  }
+
+  const userInfo = await getUserInfo();
+
+  // Check if user is logged in
+  if (!userInfo || !userInfo.token) {
+    saveLocalCartItem(product);// Add product to local cart
+    console.log(`Product: ${product.description} added to local cart.`);
+    return;
+  }
+
+  console.log(`Product: ${product.description} added to cart API.`);
+
+  // Set up headers
+  const myHeaders = new Headers();
+  myHeaders.append("token", userInfo.token);
+  myHeaders.append("Content-Type", "application/json"); // Ensure correct content type
+
+  // Prepare request body
+  const raw = JSON.stringify({ productId: product._id });
+
+  // Define request options
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  const apiUrl = `https://ecommerce.routemisr.com/api/v1/cart`;
+
+  try {
+    const response = await fetch(apiUrl, requestOptions);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log("Product added to cart successfully:", result);
+  } catch (error) {
+    console.error("Error adding product to cart:", error);
+  }
+}
+
+async function getCart() {
+  const userInfo = await getUserInfo();
+  if(!userInfo || !userInfo.token){
+    updateCartProducts(getLocalCartItems(),false);
+    return;
+  }
+  var myHeaders = new Headers();
+  console.log(userInfo.token);
+  myHeaders.append("token", userInfo.token);
+
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const apiUrl = `${apiBaseUrl}${cartEndPoint}`;
+  try {
+    const response = await fetch(apiUrl, requestOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const responseJson = await response.json();
+    updateCartProducts(responseJson.data,true);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+function updateCartProducts(cart, isLogged) {
+  const productsTable = document.querySelector("#cart table tbody");
+  const products = isLogged ? cart.products : cart;
+  // Validate that the table exists
+  if (!productsTable) {
+    console.error("Products table not found");
+    return;
+  }
+
+  // Clear existing content
+  productsTable.innerHTML = "";
+  if (!Array.isArray(products)) {
+    console.error("Invalid ARRAY products data:", products);
+    return;
+  }
+  console.log(products);
+  
+  // Build the HTML string
+  const rows = products.map((data) => {
+    const product = isLogged ? data.product : data;
+
+    // Validate product properties
+    if (!product || !product.imageCover || !product.title) {
+      console.error("Invalid product data", product);
+      return "";
+    }
+    console.log("product adding : "+product);
+    return `<tr>
+              <td>
+                  <a href="#" onclick= "removeCartItem('${product._id}')"> <i class="far fa-times-circle"></i></a>
+              </td>
+              <td>
+                  <img src="${product.imageCover}" alt="">
+              </td>
+              <td>${product.title}</td>
+              <td>${data.price}</td>
+              <td><input type="number" value="${data.count??1}" disabled></td>
+              <td>${data.price*(data.count??1)}</td>
+            </tr>`;
+  }).join(""); // Join array of rows into a single string
+  const subtotalContainer = document.querySelector("#cart-add #subtotal table");
+  subtotalContainer.innerHTML = `<tr>
+                <td>Cart Subtotal</td>
+                <td>$ ${cart.totalCartPrice}</td>
+            </tr>
+            <tr>
+                <td>Shipping</td>
+                <td>Free</td>
+            </tr>
+            <tr>
+                <td>
+                    <strong>Total</strong>
+                </td>
+                <td><strong>$ ${cart.totalCartPrice}</strong></td>
+            </tr>`
+  // Update table content
+  productsTable.innerHTML = rows;
+}
+function getLocalCartItems() {
+  const cartData = localStorage.getItem('user_cart');
+  return cartData ? JSON.parse(cartData) : []; // Return parsed data or an empty array
+}
+function clearLocalCartItems() {
+  localStorage.removeItem('user_cart');
+  console.log('Cart data cleared.');
+}
+function saveLocalCartItem(cartItem) {
+  // Retrieve the existing cart items from localStorage
+  const existingCart = JSON.parse(localStorage.getItem('user_cart')) || [];
+
+  // Add the new cart item to the list
+  existingCart.push(cartItem);
+
+  // Save the updated list back to localStorage
+  localStorage.setItem('user_cart', JSON.stringify(existingCart));
+
+  console.log('Cart items saved locally:', existingCart);
+}
+function removeLocalCartItem(itemId) {
+  // Retrieve the existing cart from localStorage
+  let existingCart = localStorage.getItem('user_cart');
+  
+  try {
+    // Parse the cart data
+    existingCart = JSON.parse(existingCart);
+    if (!Array.isArray(existingCart)) {
+      console.warn("Invalid cart data in localStorage. Cannot remove item.");
+      return;
+    }
+  } catch (error) {
+    console.error("Error parsing cart data from localStorage.", error);
+    return;
+  }
+
+  // Filter out the item with the matching ID
+  const updatedCart = existingCart.filter((item) => item._id !== itemId);
+
+  // Save the updated cart back to localStorage
+  localStorage.setItem('user_cart', JSON.stringify(updatedCart));
+  updateCartProducts(updatedCart);
+
+  console.log(`Item with ID ${itemId} removed from cart. Updated cart:`, updatedCart);
+}
+async function removeCartItem(itemId){
+  const userInfo = await getUserInfo();
+  if(!userInfo || !userInfo.token){
+    removeLocalCartItem(itemId);
+    return;
+  }
+  var myHeaders = new Headers();
+myHeaders.append("token", userInfo.token);
+
+var requestOptions = {
+  method: 'DELETE',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+const apiUrl = `${apiBaseUrl}${cartEndPoint}/${itemId}`;
+  try {
+    const response = await fetch(apiUrl, requestOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const responseJson = await response.json();
+    updateCartProducts(responseJson.data.products,true);
+    console.log(`product : ${itemId} deleted successfully`);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+async function proceedToCheckout() {
+  const userInfo = await getUserInfo();
+  if(!userInfo || !userInfo.token){
+    authUser();
+    return;
+  }
+  var myHeaders = new Headers();
+myHeaders.append("token", userInfo.token);
+
+var requestOptions = {
+  method: 'DELETE',
+  headers: myHeaders,
+  redirect: 'follow'
+};
+const apiUrl = `${apiBaseUrl}${cartEndPoint}`;
+  try {
+    const response = await fetch(apiUrl, requestOptions);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const responseJson = await response.json();
+    updateCartProducts([],true);
+    console.log(`cart deleted successfully`);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+async function isGuest(){
+const userInfo = await getUserInfo();
+console.log((!userInfo || !userInfo.token )? "guest" : "real user");
+return (!userInfo || !userInfo.token);
+}
+async function register(){
+  document.addEventListener("DOMContentLoaded", async () => {
+    console.log("Welcome");
+    const userInfo = await getUserInfo();
+    console.log('userinfo:'+userInfo.userName+'\n isregister:'+userInfo.isRegister);
+  if(!userInfo || !userInfo.token ||!userInfo.isRegister){
+    console.log("error not coming from register");
+    return;
+  }
+  const products = getLocalCartItems();
+ products.forEach(async (product)=>{
+  await addToCart(product);
+ });
+ clearLocalCartItems();
+  });
+  
+  
+}
