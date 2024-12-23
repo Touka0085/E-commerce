@@ -8,7 +8,8 @@ if (isset($_SESSION['token'])) {
     echo json_encode([
         'token' => $_SESSION['token'],
         'userName' => $_SESSION['userName'],
-        'email' => $_SESSION['email']
+        'email' => $_SESSION['email'],
+        'isRegister'=>$_SESSION['isRegister']??false
     ]);
 } else {
     echo json_encode(['token' => null]);
