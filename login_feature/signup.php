@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $_SESSION['token'] = $responseData['token'];
             $_SESSION['userName'] = $responseData['user']['name'];
             $_SESSION['email'] = $responseData['user']['email'];
+            $_SESSION['isRegister'] = true;
         }
     }
 
