@@ -35,14 +35,14 @@ async function fetchProducts(page, pagination) {
       initPagination(responseJson.metadata.numberOfPages);
     }
     console.log(`for page ${page} response : ${responseJson.data}`);
-    updateProductSection(responseJson.data,false);
+    updateProductSection(responseJson.data, false);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
-function updateProductSection(products,isNewArrival) {
+function updateProductSection(products, isNewArrival) {
   const productContainer = document.querySelector(
-    `${isNewArrival?'#new-arrival':'#featured-products'} #product1 .pro-container`
+    `${isNewArrival ? '#new-arrival' : '#featured-products'} #product1 .pro-container`
   );
 
   productContainer.innerHTML = ""; // Clear previous products
@@ -55,8 +55,8 @@ function updateProductSection(products,isNewArrival) {
                     <span>${product.brand.name}</span>
                     <h5>${product.title}</h5>
                     <div class="star">${generateStars(
-                      product.ratingsAverage
-                    )}</div>
+      product.ratingsAverage
+    )}</div>
                     <h4>$${product.price}</h4>
                 </div>
                 <a href="#" class="cart-btn"><i class="fa-solid fa-cart-shopping cart"></i></a>
@@ -104,7 +104,7 @@ async function fetchNewProducts() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const responseJson = await response.json();
-    updateProductSection(responseJson.data,true);
+    updateProductSection(responseJson.data, true);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -177,3 +177,54 @@ function handleDetailsImages(length) {
     };
   }
 }
+
+// Login script
+async function getUserInfo() {
+  const response = await fetch('./login_feature/get_user_info.php');
+  const data = await response.json();
+  return data;
+}
+async function authUser() {
+  const userInfo = await getUserInfo();
+  // console.log("User info:" + JSON.stringify(userInfo));
+
+  if (userInfo.token) {
+    // User is logged in, proceed to checkout
+    // console.log("User is logged in. Redirecting to checkout...");
+    // POST products to api logic here
+    // TO-DO  
+  } else {
+    // User is not logged in showing pop up
+    // console.log("User not logged in. Redirecting to login page.");
+    const modalHTML = `
+   <div id="authModal">
+        <div id="PopUp-container">
+            <img src="assets/Asset 3.png" width="200px" style="margin-top: 10px;margin-bottom: 10px;" alt="">
+            <h3 style="margin-top:10px ;">Hello there,</h3>
+            <h3 style="margin-top:10px ;font-size: 16px;">You're almost there! Click the button below to Login or Sign
+                Up to proceed checkout</h3>
+            <button id="loginButton">Log In</button>
+            <button id="signupButton">Sign Up</button>
+            <button id="closeModalButton">Cancel</button>
+        </div>
+    </div>
+`;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    document.getElementById('authModal').style.display = 'block';
+    // Modal Button Logic
+    document.getElementById('loginButton').addEventListener('click', () => {
+      window.location.href = './login.html'; // Redirect to login page
+    });
+
+    document.getElementById('signupButton').addEventListener('click', () => {
+      window.location.href = './Signup.html'; // Redirect to sign-up page
+    });
+
+    document.getElementById('closeModalButton').addEventListener('click', () => {
+      // Close the modal
+      document.getElementById('authModal').style.display = 'none';
+    });
+
+  }
+}
+
