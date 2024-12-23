@@ -372,7 +372,7 @@ function updateCartProducts(cart, isLogged) {
   const subtotalContainer = document.querySelector("#cart-add #subtotal table");
   subtotalContainer.innerHTML = `<tr>
                 <td>Cart Subtotal</td>
-                <td>$ ${cart.totalCartPrice}</td>
+                <td>$ ${cart.totalCartPrice??"Login to See price"}</td>
             </tr>
             <tr>
                 <td>Shipping</td>
@@ -382,7 +382,7 @@ function updateCartProducts(cart, isLogged) {
                 <td>
                     <strong>Total</strong>
                 </td>
-                <td><strong>$ ${cart.totalCartPrice}</strong></td>
+                <td><strong>$ ${cart.totalCartPrice??"Login to See price"}</strong></td>
             </tr>`
   // Update table content
   productsTable.innerHTML = rows;
@@ -453,7 +453,7 @@ const apiUrl = `${apiBaseUrl}${cartEndPoint}/${itemId}`;
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const responseJson = await response.json();
-    updateCartProducts(responseJson.data.products,true);
+    updateCartProducts(responseJson.data,true);
     console.log(`product : ${itemId} deleted successfully`);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -491,21 +491,27 @@ const userInfo = await getUserInfo();
 console.log((!userInfo || !userInfo.token )? "guest" : "real user");
 return (!userInfo || !userInfo.token);
 }
-async function register(){
+async function register() {
   document.addEventListener("DOMContentLoaded", async () => {
     console.log("Welcome");
     const userInfo = await getUserInfo();
-    console.log('userinfo:'+userInfo.userName+'\n isregister:'+userInfo.isRegister);
-  if(!userInfo || !userInfo.token ||!userInfo.isRegister){
-    console.log("error not coming from register");
-    return;
-  }
-  const products = getLocalCartItems();
- products.forEach(async (product)=>{
-  await addToCart(product);
- });
- clearLocalCartItems();
+    console.log('userinfo:' + userInfo.userName + '\n isregister:' + userInfo.isRegister);
+
+    if (!userInfo || !userInfo.token || !userInfo.isRegister) {
+      console.log("error not coming from register");
+      return;
+    }
+
+    const products = getLocalCartItems();
+
+    // Function to add a delay
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+    for (const product of products) {
+      await addToCart(product); // Call addToCart
+      await delay(1000); // Wait for 2 seconds
+    }
+
+    clearLocalCartItems(); // Clear local cart items after adding all
   });
-  
-  
 }
