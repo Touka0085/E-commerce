@@ -26,11 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	]);
 	curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData); // Attach the JSON data
 
-	header("Content-Type: application/json");
-
+	// header("Content-Type: application/json");
 	// Execute the request
 	$response = curl_exec($ch);
-	echo $response;
+	// echo $response;
 
 
 	// Check for errors
@@ -38,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 		echo "cURL error: " . curl_error($ch);
 	} else {
 		// Decode JSON response into an associative array
-		$responseData = json_decode($response, true);
+		$responseData = json_decode($response, associative: true);
 		// Check if the response contains the 'token'
 		if (isset($responseData['token'])) {
 			// Extract the token
@@ -47,10 +46,25 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 			$_SESSION['token'] = $responseData['token'];
 			$_SESSION['userName'] = $responseData['user']['name'];
 			$_SESSION['email'] = $responseData['user']['email'];
-		} 
+			// Redirect to the index page
+			header("Location: ../index.html");
+			// Close the cURL session
+			curl_close($ch);
+			exit();
+		} else {
+			$errorMessage = '';
+			if (isset($responseData['statusMsg']))
+				$errorMessage = $responseData['message'];
+			else {
+				$errorMessage =  $responseData['errors']['param']  . ' ! ' . $responseData['errors']['msg'];
+			}
+			// echo '' . $errorMessage . '';
+			// Redirect to the index page 
+			header("Location: ../login.html?error=" . urlencode($errorMessage));
+
+			// Close the cURL session
+			curl_close($ch);
+			exit();
+		}
 	}
-	// Close the cURL session
-	curl_close($ch);
-	// Redirect to the index page
-	header("Location: ../index.html");
 }

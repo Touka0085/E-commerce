@@ -44,8 +44,7 @@ async function fetchProducts(page, pagination) {
 }
 function updateProductSection(products, isNewArrival) {
   const productContainer = document.querySelector(
-    `${
-      isNewArrival ? "#new-arrival" : "#featured-products"
+    `${isNewArrival ? "#new-arrival" : "#featured-products"
     } #product1 .pro-container`
   );
 
@@ -61,8 +60,8 @@ function updateProductSection(products, isNewArrival) {
                     <span>${product.brand.name}</span>
                     <h5>${product.title}</h5>
                     <div class="star">${generateStars(
-                      product.ratingsAverage
-                    )}</div>
+      product.ratingsAverage
+    )}</div>
                     <h4>$${product.price}</h4>
                 </div>
                 <div class="cart-btn" data-product='${JSON.stringify(product)
@@ -93,6 +92,7 @@ function updateProductSection(products, isNewArrival) {
       // Add your cart handling logic here
     });
   });
+
 }
 
 function handleProductClick(productId) {
@@ -208,10 +208,19 @@ function handleDetailsImages(length) {
 
 // Login script
 async function getUserInfo() {
-  const response = await fetch("./login_feature/get_user_info.php");
+  const response = await fetch('./login_feature/get_user_info.php');
   const data = await response.json();
   return data;
 }
+async function isGuest() {
+  const userInfo = await getUserInfo();
+  console.log((!userInfo || !userInfo.token) ? "guest" : "real user");
+  return (!userInfo || !userInfo.token);
+}
+
+if (!isGuest())
+  logoutButton.style.display = "block";
+
 async function authUser() {
   const userInfo = await getUserInfo();
   // console.log("User info:" + JSON.stringify(userInfo));
@@ -351,7 +360,6 @@ function updateCartProducts(cart, isLogged) {
     return;
   }
   console.log(products);
-
   // Build the HTML string
   const rows = products
     .map((data) => {
@@ -392,6 +400,7 @@ function updateCartProducts(cart, isLogged) {
                 <td>
                     <strong>Total</strong>
                 </td>
+
                 <td><strong>$ ${
                   cart.totalCartPrice ?? "Login to See price"
                 }</strong></td>
