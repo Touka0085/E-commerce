@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,9 +8,12 @@
     <title>Capsule</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 </head>
+
 <body>
     <section id="header">
         <a href="#"><img src="assets/Asset 2.png" height="40px" class="logo" alt=""></a>
@@ -21,7 +24,9 @@
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
-                <li id="lg-bag"><a href="cart.html"  class="active" ><i class="fa-solid fa-shopping-bag"></i></a></li>
+                <li id="lg-bag"><a href="cart.html" class="active"><i class="fa-solid fa-shopping-bag"></i></a></li>
+                <li id="logout-btn" style="display: none;"><a href="./login_feature/logout.php"><i
+                            class="fa-solid fa-sign-out" style="color: #ff1111;"></i></a></li>
                 <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
             </ul>
 
@@ -33,27 +38,27 @@
     </section>
 
     </section>
-    
-    <section id="page-header"  class="about-header">
+
+    <section id="page-header" class="about-header">
         <h2>#cart</h2>
         <p>Add your coupon code & SAVE upto 70%!</p>
-      </section>
+    </section>
 
     <section class="section-p1" id="cart">
-     <table width="100%">
-       <thead>
-        <tr>
-            <td>REMOVE</td>
-            <td>IMAGE</td>
-            <td>PRODUCT</td>
-            <td>PRICE</td>
-            <td>QUANTITY</td>
-            <td>SUBTOTAL</td>
-        </tr>
-       </thead>
-       <tbody>
-       </tbody>
-     </table>
+        <table width="100%">
+            <thead>
+                <tr>
+                    <td>REMOVE</td>
+                    <td>IMAGE</td>
+                    <td>PRODUCT</td>
+                    <td>PRICE</td>
+                    <td>QUANTITY</td>
+                    <td>SUBTOTAL</td>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
 
     </section>
 
@@ -67,13 +72,13 @@
         </div>
 
         <div id="subtotal">
-          <h3>Cart Totals </h3>
-          <table>
-          </table>
-          <button class="normal" onclick="proceedToCheckout()">Proceed to checkout</button>
+            <h3>Cart Totals </h3>
+            <table>
+            </table>
+            <button class="normal" onclick="proceedToCheckout()">Proceed to checkout</button>
         </div>
     </section>
-      <footer class="section-p1">
+    <footer class="section-p1">
         <div class="col">
             <img class="logo" src="assets/LogoBlack.png" height="40px" alt="">
             <h4>Contact</h4>
@@ -124,9 +129,11 @@
 
 
 
-      <script src="script.js"></script>
-      <script>
+    <script src="script.js"></script>
+    <script>
+        showLogout();
         getCart();
-      </script>
-    </body>
-        </html>
+    </script>
+</body>
+
+</html>

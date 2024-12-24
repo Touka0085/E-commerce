@@ -44,8 +44,7 @@ async function fetchProducts(page, pagination) {
 }
 function updateProductSection(products, isNewArrival) {
   const productContainer = document.querySelector(
-    `${
-      isNewArrival ? "#new-arrival" : "#featured-products"
+    `${isNewArrival ? "#new-arrival" : "#featured-products"
     } #product1 .pro-container`
   );
 
@@ -59,35 +58,35 @@ function updateProductSection(products, isNewArrival) {
                     <span>${product.brand.name}</span>
                     <h5>${product.title}</h5>
                     <div class="star">${generateStars(
-                      product.ratingsAverage
-                    )}</div>
+      product.ratingsAverage
+    )}</div>
                     <h4>$${product.price}</h4>
                 </div>
                 <div class="cart-btn" data-product='${JSON.stringify(product).replace(/'/g, "&apos;").replace(/"/g, "&quot;")}'><i class="fa-solid fa-cart-shopping cart"></i></div>
             </div>
         `;
-        
+
     //const productElement = document.createElement("div");
     productContainer.innerHTML += productHTML;
-    
+
     //const productDiv = productElement.firstElementChild;
-    
+
     // productDiv.onclick = function () {
     //   // handleProductClick(product);
     // };
 
     //productContainer.appendChild(productDiv);
-    
+
   });
   document.querySelectorAll('.cart-btn').forEach((button) => {
-    button.addEventListener('click', async() => {
+    button.addEventListener('click', async () => {
       const product = JSON.parse(button.getAttribute('data-product'));
       await addToCart(product);
       console.log("Adding product to cart:", product);
       // Add your cart handling logic here
     });
   });
-  
+
 }
 
 function handleProductClick(productId) {
@@ -153,13 +152,13 @@ function updateSpecificProduct(product) {
   const productDetailsContainer = document.querySelector(
     "#prodetails .single-pro-details"
   );
-  
+
   productDetailsContainer.innerHTML += `<h4>Product Details</h4>
     <span>${product.description}
     </span>`;
-    const addToCartButton = document.querySelector(
-      "#prodetails .single-pro-details .normal"
-    );
+  const addToCartButton = document.querySelector(
+    "#prodetails .single-pro-details .normal"
+  );
   const details = document.querySelector(
     "#prodetails .single-pro-details #details"
   );
@@ -179,7 +178,7 @@ function updateSpecificProduct(product) {
              <img src="${image}" width="100%" class="small-img" alt="">
            </div>`;
   });
-  addToCartButton.onclick = async function(){
+  addToCartButton.onclick = async function () {
     await addToCart(product);
     console.log("event listener");
   };
@@ -203,10 +202,19 @@ function handleDetailsImages(length) {
 
 // Login script
 async function getUserInfo() {
-  const response = await fetch("./login_feature/get_user_info.php");
+  const response = await fetch('./login_feature/get_user_info.php');
   const data = await response.json();
   return data;
 }
+async function isGuest() {
+  const userInfo = await getUserInfo();
+  console.log((!userInfo || !userInfo.token) ? "guest" : "real user");
+  return (!userInfo || !userInfo.token);
+}
+
+if (!isGuest())
+  logoutButton.style.display = "block";
+
 async function authUser() {
   const userInfo = await getUserInfo();
   // console.log("User info:" + JSON.stringify(userInfo));
@@ -304,8 +312,8 @@ async function addToCart(product) {
 
 async function getCart() {
   const userInfo = await getUserInfo();
-  if(!userInfo || !userInfo.token){
-    updateCartProducts(getLocalCartItems(),false);
+  if (!userInfo || !userInfo.token) {
+    updateCartProducts(getLocalCartItems(), false);
     return;
   }
   var myHeaders = new Headers();
@@ -324,7 +332,7 @@ async function getCart() {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const responseJson = await response.json();
-    updateCartProducts(responseJson.data,true);
+    updateCartProducts(responseJson.data, true);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -345,7 +353,7 @@ function updateCartProducts(cart, isLogged) {
     return;
   }
   console.log(products);
-  
+
   // Build the HTML string
   const rows = products.map((data) => {
     const product = isLogged ? data.product : data;
@@ -355,7 +363,7 @@ function updateCartProducts(cart, isLogged) {
       console.error("Invalid product data", product);
       return "";
     }
-    console.log("product adding : "+product);
+    console.log("product adding : " + product);
     return `<tr>
               <td>
                   <a href="#" onclick= "removeCartItem('${product._id}')"> <i class="far fa-times-circle"></i></a>
@@ -365,14 +373,14 @@ function updateCartProducts(cart, isLogged) {
               </td>
               <td>${product.title}</td>
               <td>${data.price}</td>
-              <td><input type="number" value="${data.count??1}" disabled></td>
-              <td>${data.price*(data.count??1)}</td>
+              <td><input type="number" value="${data.count ?? 1}" disabled></td>
+              <td>${data.price * (data.count ?? 1)}</td>
             </tr>`;
   }).join(""); // Join array of rows into a single string
   const subtotalContainer = document.querySelector("#cart-add #subtotal table");
   subtotalContainer.innerHTML = `<tr>
                 <td>Cart Subtotal</td>
-                <td>$ ${cart.totalCartPrice??"Login to See price"}</td>
+                <td>$ ${cart.totalCartPrice ?? "Login to See price"}</td>
             </tr>
             <tr>
                 <td>Shipping</td>
@@ -382,7 +390,7 @@ function updateCartProducts(cart, isLogged) {
                 <td>
                     <strong>Total</strong>
                 </td>
-                <td><strong>$ ${cart.totalCartPrice??"Login to See price"}</strong></td>
+                <td><strong>$ ${cart.totalCartPrice ?? "Login to See price"}</strong></td>
             </tr>`
   // Update table content
   productsTable.innerHTML = rows;
@@ -410,7 +418,7 @@ function saveLocalCartItem(cartItem) {
 function removeLocalCartItem(itemId) {
   // Retrieve the existing cart from localStorage
   let existingCart = localStorage.getItem('user_cart');
-  
+
   try {
     // Parse the cart data
     existingCart = JSON.parse(existingCart);
@@ -432,28 +440,28 @@ function removeLocalCartItem(itemId) {
 
   console.log(`Item with ID ${itemId} removed from cart. Updated cart:`, updatedCart);
 }
-async function removeCartItem(itemId){
+async function removeCartItem(itemId) {
   const userInfo = await getUserInfo();
-  if(!userInfo || !userInfo.token){
+  if (!userInfo || !userInfo.token) {
     removeLocalCartItem(itemId);
     return;
   }
   var myHeaders = new Headers();
-myHeaders.append("token", userInfo.token);
+  myHeaders.append("token", userInfo.token);
 
-var requestOptions = {
-  method: 'DELETE',
-  headers: myHeaders,
-  redirect: 'follow'
-};
-const apiUrl = `${apiBaseUrl}${cartEndPoint}/${itemId}`;
+  var requestOptions = {
+    method: 'DELETE',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+  const apiUrl = `${apiBaseUrl}${cartEndPoint}/${itemId}`;
   try {
     const response = await fetch(apiUrl, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const responseJson = await response.json();
-    updateCartProducts(responseJson.data,true);
+    updateCartProducts(responseJson.data, true);
     console.log(`product : ${itemId} deleted successfully`);
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -461,35 +469,35 @@ const apiUrl = `${apiBaseUrl}${cartEndPoint}/${itemId}`;
 }
 async function proceedToCheckout() {
   const userInfo = await getUserInfo();
-  if(!userInfo || !userInfo.token){
+  if (!userInfo || !userInfo.token) {
     authUser();
     return;
   }
   var myHeaders = new Headers();
-myHeaders.append("token", userInfo.token);
+  myHeaders.append("token", userInfo.token);
 
-var requestOptions = {
-  method: 'DELETE',
-  headers: myHeaders,
-  redirect: 'follow'
-};
-const apiUrl = `${apiBaseUrl}${cartEndPoint}`;
+  var requestOptions = {
+    method: 'DELETE',
+    headers: myHeaders,
+    redirect: 'follow'
+  };
+  const apiUrl = `${apiBaseUrl}${cartEndPoint}`;
   try {
     const response = await fetch(apiUrl, requestOptions);
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     const responseJson = await response.json();
-    updateCartProducts([],true);
+    updateCartProducts([], true);
     console.log(`cart deleted successfully`);
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
-async function isGuest(){
-const userInfo = await getUserInfo();
-console.log((!userInfo || !userInfo.token )? "guest" : "real user");
-return (!userInfo || !userInfo.token);
+async function isGuest() {
+  const userInfo = await getUserInfo();
+  console.log((!userInfo || !userInfo.token) ? "guest" : "real user");
+  return (!userInfo || !userInfo.token);
 }
 async function register() {
   document.addEventListener("DOMContentLoaded", async () => {

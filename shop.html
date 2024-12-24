@@ -27,6 +27,8 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li id="lg-bag"><a href="cart.html"><i class="fa-solid fa-shopping-bag"></i></a></li>
+                <li id="logout-btn" style="display: none;"><a href="./login_feature/logout.php"><i
+                            class="fa-solid fa-sign-out" style="color: #ff1111;"></i></a></li>
                 <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
             </ul>
 
@@ -113,6 +115,7 @@
 
     <script src="script.js"></script>
     <script>
+        showLogout();
         fetchProducts(1, true);
         isGuest();
     </script>
