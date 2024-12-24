@@ -5,6 +5,7 @@ const apiBaseUrl = "https://ecommerce.routemisr.com/api/v1/";
 const productsEndPoint = "products";
 const cartEndPoint = "cart";
 var cart = [];
+const logoutButton = document.getElementById("logout-btn");
 if (bar) {
   bar.addEventListener("click", () => {
     nav.classList.add("active");
@@ -218,8 +219,16 @@ async function isGuest() {
   return (!userInfo || !userInfo.token);
 }
 
-if (!isGuest())
-  logoutButton.style.display = "block";
+async function showLogout() {
+  const isAnony = await isGuest();
+  if(!isAnony){
+    logoutButton.style.display = "block";
+    console.log("Showing logout");
+  }
+  else{
+    console.log("Not showing logout");
+  }
+}
 
 async function authUser() {
   const userInfo = await getUserInfo();
