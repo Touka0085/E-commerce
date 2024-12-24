@@ -8,6 +8,11 @@
     <title>Capsule</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+    
+
+
 </head>
 
 <body>
@@ -21,16 +26,16 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="contact.html">Contact</a></li>
                 <li id="lg-bag"><a href="cart.html"><i class="fa-solid fa-shopping-bag"></i></a></li>
+                <li id="logout-btn" style="display: none;"><a href="./login_feature/logout.php"><i
+                            class="fa-solid fa-sign-out" style="color: #ff1111;"></i></a></li>
                 <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
             </ul>
-
         </div>
         <div id="mobile">
             <a href="cart.html"><i class="fa-solid fa-shopping-bag"></i></a>
             <i id="bar" class="fa-solid fa-outdent"></i>
         </div>
     </section>
-    
     <section id="hero">
         <h4>Trade-in-offer</h4>
         <h2>Super value deals</h2>
@@ -81,12 +86,12 @@
         <button class="normal" onclick="location.href = 'shop.html'">Explore More</button>
     </section>
 
-    <section id ="new-arrival">
+    <section id="new-arrival">
         <section id="product1" class="section-p1">
             <h2>New Arrivals</h2>
             <p>Summer Collection New Morden Design</p>
             <div class="pro-container">
-        
+
             </div>
         </section>
     </section>
@@ -96,13 +101,13 @@
             <h4>crazy deals</h4>
             <h2>buy 1 get 1 free</h2>
             <span>The best classic dress is on sale at cara</span>
-            <button class="white"  onclick="location.href = 'shop.html'">Learn More</button>
+            <button class="white" onclick="location.href = 'shop.html'">Learn More</button>
         </div>
         <div class="banner-box banner-box2">
             <h4>spring/summer</h4>
             <h2>upcoming season</h2>
             <span>The best classic dress is on sale at cara</span>
-            <button class="white"  onclick="location.href = 'shop.html'">Collection</button>
+            <button class="white" onclick="location.href = 'shop.html'">Collection</button>
         </div>
     </section>
 
@@ -183,10 +188,11 @@
 
     <script src="script.js"></script>
     <script>
-         fetchProducts(1,false);
-         fetchNewProducts();
-         register();
-         isGuest();
+        showLogout();
+        fetchProducts(1, false);
+        fetchNewProducts();
+        register();
+        isGuest();
     </script>
 </body>
 

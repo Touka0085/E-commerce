@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
 </head>
 
 <body>
@@ -26,6 +28,8 @@
         <li id="lg-bag">
           <a href="cart.html"><i class="fa-solid fa-shopping-bag"></i></a>
         </li>
+        <li id="logout-btn" style="display: none;"><a href="./login_feature/logout.php"><i class="fa-solid fa-sign-out"
+              style="color: #ff1111;"></i></a></li>
         <a href="#" id="close"><i class="fa-solid fa-times"></i></a>
       </ul>
     </div>
@@ -47,7 +51,7 @@
         <option>Large</option>
       </select>
       <input type="number" value="1" />
-      <button class="normal">Add To Car</button>
+      <button class="normal">Add To Cart</button>
     </div>
   </section>
 
@@ -139,6 +143,7 @@
   </footer>
   <script src="script.js"></script>
   <script>
+    showLogout();
     fetchSpecificProduct();
     fetchProducts(1, false);
   </script>
